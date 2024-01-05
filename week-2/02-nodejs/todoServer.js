@@ -21,7 +21,7 @@
     Request Body: JSON object representing the todo item.
     Response: 201 Created with the ID of the created todo item in JSON format. eg: {id: 1}
     Example: POST http://localhost:3000/todos
-    Request Body: { "title": "Buy groceries", "completed": false, description: "I should buy groceries" }
+    Request Body: { "title": "Buy groceries", "completed": false, "description": "I should buy groceries" }
     
   4. PUT /todos/:id - Update an existing todo item by ID
     Description: Updates an existing todo item identified by its ID.
@@ -39,11 +39,73 @@
 
   Testing the server - run `npm run test-todoServer` command in terminal
  */
-  const express = require('express');
-  const bodyParser = require('body-parser');
-  
-  const app = express();
-  
-  app.use(bodyParser.json());
-  
-  module.exports = app;
+const express = require("express");
+const bodyParser = require("body-parser");
+const app = express();
+
+let ID = 0;
+let todos = [];
+
+app.use(bodyParser.json());
+
+app.get("/todos", (req, res) => {
+  res.status(200).json(todos);
+});
+
+app.get("/todos/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const specificTodo = todos.filter((todo) => todo.id === id);
+  if (specificTodo.length === 0) res.sendStatus(404);
+  else res.status(200).json(specificTodo[0]);
+});
+
+app.post("/todos", (req, res) => {
+  const items = {
+    id: Math.floor(Math.random() * 1000000),
+    title: req.body.title,
+    description: req.body.description,
+  };
+  todos.push(items);
+  res.status(201).json(items);
+  ID += 1;
+});
+
+app.put("/todos/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const items = req.body;
+  const itemIndex = todos.findIndex((todo) => todo.id === id);
+  if (itemIndex === -1) res.sendStatus(404);
+  else {
+    todos[itemIndex] = { ...todos[itemIndex], ...items };
+    res.sendStatus(200);
+  }
+});
+
+app.delete("/todos/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const isExist = todos.filter((todo) => todo.id === id);
+  if (isExist.length === 0) res.sendStatus(404);
+  else {
+    todos = todos.filter((todo) => todo.id !== id);
+    res.sendStatus(200);
+  }
+});
+
+app.get("*", (req, res) => {
+  res.sendStatus(404);
+});
+app.post("*", (req, res) => {
+  res.sendStatus(404);
+});
+app.put("*", (req, res) => {
+  res.sendStatus(404);
+});
+app.delete("*", (req, res) => {
+  res.sendStatus(404);
+});
+
+module.exports = app;
+
+// app.listen(3000, function () {
+//   console.log("Listening...");
+// });
