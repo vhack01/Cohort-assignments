@@ -1,3 +1,6 @@
-#Cohort 2.0 Assignment 
-
-##Completed assignment from week(1.0 to 4.0) 
+# Cohort 2.0 Assignments
+- Completed assignment
+	- Week 1.0 -> done!
+	- Week 2.0 -> done!
+	- Week 3.0 -> done!
+	- Week 4.0 -> done! 
